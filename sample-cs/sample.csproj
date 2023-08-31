@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <!-- GitVersionTargets -->
+  <PropertyGroup>
+    <GVT_ReadBranch>true</GVT_ReadBranch>
+    <GVT_ReadCommit>true</GVT_ReadCommit>
+    <GVT_CommitHashLength>8</GVT_CommitHashLength>
+    <GVT_DirtySuffix>-dirty</GVT_DirtySuffix>
+  </PropertyGroup>
+  <Import Project="..\GitVersion.targets" />
+
+</Project>

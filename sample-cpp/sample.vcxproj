@@ -134,12 +134,10 @@
   </ImportGroup>
   <!-- GitVersionTargets -->
   <PropertyGroup>
-      <GVT_ReadBranch>true</GVT_ReadBranch>
-      <GVT_ReadCommit>true</GVT_ReadCommit>
-      <GVT_CommitHashLength>8</GVT_CommitHashLength>
-      <GVT_DirtySuffix>-dirty</GVT_DirtySuffix>
+    <GVT_ReadBranch>true</GVT_ReadBranch>
+    <GVT_ReadCommit>true</GVT_ReadCommit>
+    <GVT_CommitHashLength>8</GVT_CommitHashLength>
+    <GVT_DirtySuffix>-dirty</GVT_DirtySuffix>
   </PropertyGroup>
-  <ImportGroup>
-    <Import Project="..\GitVersion.targets" />
-  </ImportGroup>
+  <Import Project="..\GitVersion.targets" />
 </Project>

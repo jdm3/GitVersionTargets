@@ -1,5 +1,10 @@
-/sample/.vs/
-/sample/x64/
-/sample/Debug/
-/sample/Release/
-/sample/sample.vcxproj.user
+/sample-cpp/.vs/
+/sample-cpp/x64/
+/sample-cpp/Debug/
+/sample-cpp/Release/
+/sample-cpp/sample.vcxproj.user
+
+/sample-cs/.vs/
+/sample-cs/bin/
+/sample-cs/obj/
+/sample-cs/GVT_GitVersion.cs

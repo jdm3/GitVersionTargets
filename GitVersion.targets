@@ -29,16 +29,27 @@
 
   <!-- This target reads the version and stores them as properties.  -->
   <Target Name="GVT_ReadVersion" BeforeTargets="PrepareForBuild">
-    <Exec
-      Command="git.exe rev-parse --abbrev-ref HEAD"
-      ConsoleToMsBuild="true" Condition="'$(GVT_ReadBranch)'=='true'">
+    <Exec Condition="'$(GVT_ReadBranch)'=='true'"
+          Command="git.exe rev-parse --abbrev-ref HEAD"
+          ConsoleToMsBuild="true">
       <Output TaskParameter="ConsoleOutput" PropertyName="GVT_Branch" />
     </Exec>
-    <Exec
-      Command="git.exe describe --always --abbrev=$(GVT_CommitHashLength) --dirty=&quot;$(GVT_CommitDirtySuffix)&quot; --match=&quot; &quot;"
-      ConsoleToMsBuild="true" Condition="'$(GVT_ReadCommit)'=='true'">
+    <Exec Condition="'$(GVT_ReadCommit)'=='true'"
+          Command="git.exe describe --always --abbrev=$(GVT_CommitHashLength) --dirty=&quot;$(GVT_CommitDirtySuffix)&quot; --match=&quot; &quot;"
+          ConsoleToMsBuild="true">
       <Output TaskParameter="ConsoleOutput" PropertyName="GVT_Commit" />
     </Exec>
+
+    <ItemGroup Condition="'$(MSBuildProjectExtension)'=='.csproj'">
+        <GVT_CSFileLine Include="public static class GVT {" />
+        <GVT_CSFileLine Include="    public static readonly string COMMIT=&quot;$(GVT_Commit)&quot;%3B" />
+        <GVT_CSFileLine Include="    public static readonly string BRANCH=&quot;$(GVT_Branch)&quot;%3B" />
+        <GVT_CSFileLine Include="}" />
+    </ItemGroup>
+    <WriteLinesToFile Condition="'$(MSBuildProjectExtension)'=='.csproj'"
+                      File="$(MSBUILDProjectDirectory)\GVT_GitVersion.cs"
+                      Lines="@(GVT_CSFileLine)"
+                      Overwrite="true" />
   </Target>
 
   <!-- This target adds the defines to any compiled files.  -->
