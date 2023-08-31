@@ -1,7 +1,7 @@
 # GitVersion.targets
 
 GitVersions.targets is a msbuild/Visual Studio targets file that can be imported into a C++ project to
-make the git repository version available as a compile defines.
+make the git repository version available as compile defines.
 
 To add to a project, edit its .vcxproj file and import *GetVersion.targets* (typically near the
  end of the project file):
