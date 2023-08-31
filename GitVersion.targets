@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Copyright (C) 2023 Jefferson Montgomery
+       SPDX-License-Identifier: MIT -->
+
+  <!-- GVT options; set these properties before importing GitVersion.targets to override
+      GVT_ReadBranch       Whether or not to read/set the GVT_BRANCH define
+      GVT_ReadCommit       Whether or not to read/set the GVT_COMMIT define
+      GVT_CommitHashLength How many characters of the hash to use in GVT_COMMIT (0==all)
+      GVT_DirtySuffix      What suffix to use on the hash if the repository has modified files -->
+  <PropertyGroup>
+      <GVT_ReadBranch Condition="'$(GVT_ReadBranch)'==''">true</GVT_ReadBranch>
+      <GVT_ReadCommit Condition="'$(GVT_ReadCommit)'==''">true</GVT_ReadCommit>
+
+      <GVT_CommitHashLength Condition="'$(GVT_CommitHashLength)'==''">0</GVT_CommitHashLength>
+      <GVT_CommitDirtySuffix Condition="'$(GVT_CommitDirtySuffix)'==''">-dirty</GVT_CommitDirtySuffix>
+  </PropertyGroup>
+
+  <!-- This is required so that Visual Studio knows about the defines and that they are strings.
+  It's a bit annoying becasue I don't know how to replace them, so the compile command line will
+  have duplicate defines (these empty ones, and then the correct ones later).  -->
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions Condition="'$(GVT_ReadBranch)'=='true'">%(PreprocessorDefinitions);GVT_BRANCH="";</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(GVT_ReadCommit)'=='true'">%(PreprocessorDefinitions);GVT_COMMIT="";</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+  </ItemDefinitionGroup>
+
+  <!-- This target reads the version and stores them as properties.  -->
+  <Target Name="GVT_ReadVersion" BeforeTargets="PrepareForBuild">
+    <Exec
+      Command="git.exe rev-parse --abbrev-ref HEAD"
+      ConsoleToMsBuild="true" Condition="'$(GVT_ReadBranch)'=='true'">
+      <Output TaskParameter="ConsoleOutput" PropertyName="GVT_Branch" />
+    </Exec>
+    <Exec
+      Command="git.exe describe --always --abbrev=$(GVT_CommitHashLength) --dirty=&quot;$(GVT_CommitDirtySuffix)&quot; --match=&quot; &quot;"
+      ConsoleToMsBuild="true" Condition="'$(GVT_ReadCommit)'=='true'">
+      <Output TaskParameter="ConsoleOutput" PropertyName="GVT_Commit" />
+    </Exec>
+  </Target>
+
+  <!-- This target adds the defines to any compiled files.  -->
+  <Target Name="GVT_AddVersion" BeforeTargets="ClCompile">
+      <ItemGroup>
+        <ClCompile>
+          <PreprocessorDefinitions>
+            %(PreprocessorDefinitions);
+            GVT_BRANCH="$(GVT_Branch)";
+            GVT_COMMIT="$(GVT_Commit)";
+          </PreprocessorDefinitions>
+        </ClCompile>
+      </ItemGroup>
+  </Target>
+</Project>
